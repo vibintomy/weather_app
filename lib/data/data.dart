@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String apiKey = "db129cea28b8ac86c16a7a38f6a21f31";
+String apiKey = "21f22329cafed1e374f9f58871daf58e";
 
 String greetings() {
   var hour = DateTime.now().hour;
