@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:weather_app/application/model/location_model.dart';
 
@@ -59,5 +61,25 @@ class CityService {
       print('Error in deleteCityByName: $e');
       throw Exception('Failed to delete city: $e');
     }
+  }
+}
+
+
+class Debouncer {
+  final int milliseconds;
+  VoidCallback? action;
+  Timer? _timer;
+
+  Debouncer({required this.milliseconds});
+
+  run(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+
+  dispose() {
+    _timer?.cancel();
   }
 }

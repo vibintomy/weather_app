@@ -12,12 +12,14 @@ import 'package:weather_app/bloc/weather_bloc_bloc.dart';
 import 'package:weather_app/cityServices/bloc/city_bloc_bloc.dart';
 import 'package:weather_app/screens/saved_screen.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   final Position initialPosition;
- 
+
   final CityService cityService = CityService();
   HomePage({super.key, required this.initialPosition});
   final TextEditingController _searchController = TextEditingController();
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
 
   String? cityName;
   @override
@@ -40,8 +42,10 @@ class HomePage extends StatelessWidget {
                   controller: _searchController,
                   placeholder: 'Search',
                   onChanged: (query) {
+                    _debouncer.run(() {
                     BlocProvider.of<WeatherBlocBloc>(context)
                         .add(FetchWeatherBycityName(query));
+                        });
                   },
                   onSubmitted: (query) {
                     BlocProvider.of<WeatherBlocBloc>(context)
@@ -125,7 +129,6 @@ class HomePage extends StatelessWidget {
                     BlocBuilder<WeatherBlocBloc, WeatherBlocState>(
                       builder: (context, state) {
                         if (state is WeatherBlocSuccess) {
-                       
                           return SizedBox(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height,
@@ -169,7 +172,8 @@ class HomePage extends StatelessWidget {
                                     IconButton(
                                         onPressed: () async {
                                           BlocProvider.of<CityBlocBloc>(context)
-                                              .add(Addcity(_searchController.text));
+                                              .add(Addcity(
+                                                  _searchController.text));
 
                                           Navigator.push(
                                               context,
